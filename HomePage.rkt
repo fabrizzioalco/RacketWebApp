@@ -34,19 +34,60 @@
    `(html (head (title "Algorithms"))
           (body
            (h1 "Algoritmos")
-           (a((href, (listHtml embed/url (post-title items)))),  "Merge Sort")))))
+           (p (a ([href, (embed/url merge-handler)]) "Merge Sort"))
+           (p (a ([href, (embed/url merge-handler)]) "Max Element"))
+           (p (a ([href, (embed/url merge-handler)]) "Min Element"))
+           (p (a ([href, (embed/url merge-handler)]) "Prime number"))
+           ))))
+
   (send/suspend/dispatch response-generator))
 
 
-
-
-(define (listHtml list name)
-  (define (response-generator embed/url)
+(define (merge-handler request)
+  
     (response/xexpr
-     `(html (head (title name))
+     `(html (head (title "Merge Sort"))
             (body
-             (h1, (name))))))
-  (send/suspend/dispatch response-generator))
+             (h1 "Merge Sort")
+             (h3 "Ingrese una lista de numeros")
+             (input (name "~"))
+             (button(name "Send"))
+             ))))
+
+(define (max-handler request)
+  
+    (response/xexpr
+     `(html (head (title "Max Element"))
+            (body
+             (h1 "Max Element")
+             (h3 "Ingrese una lista de numeros")
+             (input (name "~"))
+             (button(name "Send"))
+             ))))
+
+(define (min-handler request)
+  
+    (response/xexpr
+     `(html (head (title "Min element"))
+            (body
+             (h1 "Prime number")
+             (h3 "Ingrese una lista de numeros")
+             (input (name "~"))
+             (button(name "Send"))
+             ))))
+(define (prime-handler request)
+  
+    (response/xexpr
+     `(html (head (title "Prime number"))
+            (body
+             (h1 "Prime number")
+             (h "Ingrese dos numeros")
+             (input (name "1"))
+             (input (name "2"))
+             (button(name "Send"))
+             ))))
+
+
 
 ;;renderizamos los items que tiene el post (single items from a structure )
 (define (render-post items)
