@@ -2,11 +2,11 @@
 (struct titulos (posts) #:mutable)
 (struct post(title))
 
-(define Home (list
+(define Home (titulos (list
               (post "Merge Sort")
               (post "Max element")
               (post "Min element")
-              (post "Prime number")))
+              (post "Prime number"))))
 
 ;;Empezamos servidor renderizando el Home
 (define (start request)
@@ -32,7 +32,7 @@
    `(html (head (title "Algorithms"))
           (body
            (h1 "Algoritmos")
-           ,(render-posts items)))))
+           ,(render-postss embed/url)))))
   (send/suspend/dispatch response-generator))
 
 ;;renderizamos los items que tiene el post (single items from a structure )
@@ -54,6 +54,12 @@
         (a ((href ,(embed/url view-post-handler)))
            ,(post-title a-post))
         ))
+;otra vez para renderizar
+(define (render-postss embed/url)
+  (define (render-post/embed/url a-post)
+    (render-postit a-post embed/url))
+  `(div ((class "postsss"))
+        ,@(map render-post/embed/url (titulos-posts Home))))
 
 (define (return-title-as-list items)
   `(div ((class "home-list"))
