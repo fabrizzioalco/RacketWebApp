@@ -1,12 +1,14 @@
 #lang web-server/insta
 (struct titulos (posts) #:mutable)
-(struct post(title))
+(struct post( id title))
+
+
 
 (define Home (titulos (list
-              (post "Merge Sort")
-              (post "Max element")
-              (post "Min element")
-              (post "Prime number"))))
+              (post 1 "Merge Sort")
+              (post 2 "Max element")
+              (post 3 "Min element")
+              (post 4 "Prime number"))))
 
 ;;Empezamos servidor renderizando el Home
 (define (start request)
@@ -32,7 +34,12 @@
    `(html (head (title "Algorithms"))
           (body
            (h1 "Algoritmos")
-           ,(render-postss embed/url)))))
+           ,(render-postss embed/url)
+           ))))
+
+
+
+  
   (send/suspend/dispatch response-generator))
 
 ;;renderizamos los items que tiene el post (single items from a structure )
