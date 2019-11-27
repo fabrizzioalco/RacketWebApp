@@ -34,12 +34,18 @@
    `(html (head (title "Algorithms"))
           (body
            (h1 "Algoritmos")
-           ,(render-postss embed/url)
-           ))))
+           (a((href, (listHtml embed/url (post-title items)))),  "Merge Sort")))))
+  (send/suspend/dispatch response-generator))
 
 
 
-  
+
+(define (listHtml list name)
+  (define (response-generator embed/url)
+    (response/xexpr
+     `(html (head (title name))
+            (body
+             (h1, (name))))))
   (send/suspend/dispatch response-generator))
 
 ;;renderizamos los items que tiene el post (single items from a structure )
