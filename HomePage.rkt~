@@ -1,0 +1,49 @@
+#lang web-server/insta
+(struct homeP (posts)#:mutable)
+(struct post(title) #:mutable)
+
+(define Home (list ((post "Merge Sort")
+  (post "Prime numbers")
+  (post "Max Element")
+  (post "Min Element"))))
+
+;;Empezamos servidor renderizando el Home
+(define (start request)
+  (define home
+    (cond [(can-parse-post? (request-bindings request))
+           (cons (parse-post (request-bindings request)) Home)] [else Home]))
+
+(render-Home home request))
+;;checamos que tengamos datos en los posts.
+(define (can-parse-post? bindings)
+  (and (exists-binding? 'title bindings)))
+
+
+;;extraemos los datos de la estructura del post
+  (define (parse-post bindings)
+    (Home (extract-binding/single 'title bindings)))
+    
+;;estructura del html de la pagina principal
+(define (render-Home items req)
+  ;;rresponse-generator embed/url crea nuevos urls para las rutas que se le asigne 
+ (define (response-generator embed/url)
+    (response/xexpr 
+   `(html (head (title "Algorithms"))
+          (body
+           (h1 "Algoritmos")
+           ,(render-post items)))))
+  (send/suspend/dispatch response-generator))
+
+;;renderizamos los items que tiene el post 
+(define (render-post items)
+  `(div ((class "home")),(post-title items)))
+  
+
+;;mapeamos la renderizacion anterior
+(define (render-posts items)
+  `(div ((class "home-items"))
+        ,@(map render-post items)))
+
+
+
+
