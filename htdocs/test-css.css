@@ -1,0 +1,23 @@
+
+
+  body{
+    background-color: #dddddd;
+    margin-left: 10%;
+    margin-right: 10%
+  }
+  a{
+    
+    margin-left: 5%;
+  }
+  p {
+     font-family: sans-serif;
+     margin-left: 6%;
+
+  }
+  h1 { 
+    
+    color: black; 
+    margin-left:43%;
+    font-size: 40px;
+    font-family: cursive;
+  }
