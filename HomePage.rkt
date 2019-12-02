@@ -1,4 +1,5 @@
 #lang web-server/insta
+(static-files-path "htdocs")
 (struct titulos (posts) #:mutable)
 (struct post( id title result))
 
@@ -27,13 +28,16 @@
     (Home (extract-binding/single 'title bindings)))
     
 ;;estructura del html de la pagina principal
-(define (render-Home req)
+(define (render-Home  req)
   ;;rresponse-generator embed/url crea nuevos urls para las rutas que se le asigne 
  (define (response-generator embed/url)
     (response/xexpr 
    `(html (head (title "Algorithms"))
           (body
            (h1 "Algoritmos")
+           (link((rel "stylesheet")
+                  (href "/test-css.css")
+                  (type "text/css")))
            (p (a ([href, (embed/url merge-handler)]) "Merge Sort"))
            (p (a ([href, (embed/url max-handler)]) "Max Element"))
            (p (a ([href, (embed/url min-handler)]) "Min Element"))
@@ -46,17 +50,17 @@
 (define (merge-handler request)
   
   (define bindings (request-bindings request))
+  (define (response-generator embed/url)
   (cond((exists-binding? '~ bindings)
         (define input (extract-binding/single '~ bindings))
-        (define (response-generator embed/url)
+        
        (response/xexpr
         `(html (head (title "Merge Sort"))
                (body
                 (h1 "Merge Sort")
                 (body
                  (p "La lista es: ", (list->string (listanum->lista (merge-sort (lista->listanum (string->list input))))))
-                 (body
-                  (p(a ([href, (embed/url render-Home)]))))
+                 (p (a ([href, (embed/url back-handler)]) "Back to main page"))
                  )))))
        (else
        (response/xexpr
@@ -67,8 +71,11 @@
              (form
               (input ((name "~")))
              (input((type "Submit"))))
-             )))))
-  (send/suspend/dispatch response-generator))
+             (p (a ([href, (embed/url back-handler)]) "Back to main page "))
+             ))))))
+  (define (back-handler request)
+    (render-Home request))
+  (send/suspend/dispatch response-generator ))
   
  
 
@@ -83,6 +90,7 @@
          (cons (integer->char (+ 48 (first l))) (listanum->lista (rest l)))]))
 
 (define (max-handler request)
+  (define (response-generator embed/url)
   (define bindings (request-bindings request))
   (cond((exists-binding? '~ bindings)
         (define input (extract-binding/single '~ bindings))
@@ -91,7 +99,8 @@
                (body
                 (h1 "Max Element")
                 (body
-                 (p "La lista es: ", (list->string (listanum->lista (max-in-list (lista->listanum (string->list input)))))) ) ))))
+                 (p "La lista es: ",  (number->string (max-in-list (lista->listanum (string->list input)))))
+                 (p (a ([href, (embed/url back-handler)]) "Back to main page")))))))
        (else
        (response/xexpr
      `(html (head (title "Max Element"))
@@ -101,41 +110,71 @@
              (form
               (input ((name "~")))
              (input((type "Submit"))))
+             (p (a ([href, (embed/url back-handler)]) "Back to main page"))
              ))))))
 
+
+  (define (back-handler request)
+    (render-Home request))
+  (send/suspend/dispatch response-generator))
+
 (define (min-handler request)
+  (define (response-generator embed/url)
   (define bindings (request-bindings request))
   (cond((exists-binding? '~ bindings)
         (define input (extract-binding/single '~ bindings))
        (response/xexpr
-        `(html (head (title "Merge Sort"))
+        `(html (head (title "Min Number"))
                (body
                 (h1 "Merge Sort")
                 (body
-                 (p "El numero es
-: ",  (min-in-list (lista->listanum (string->list input)))))) ) ))
+                 (p "El numero es: ",  (number->string(min-in-list (lista->listanum (string->list input)))))
+                 (p (a ([href, (embed/url back-handler)]) "Back to main page"))) ) )))
        (else
        (response/xexpr
-     `(html (head (title "Merge Sort"))
+     `(html (head (title "Min N"))
             (body
              (h1 "Merge Sort")
              (h3 "Ingrese una lista de numeros")
              (form
-              (input ((name "~")))
+              (input ((name "1")))
              (input((type "Submit"))))
+             (p (a ([href, (embed/url back-handler)]) "Back to main page"))
              ))))))
+(define (back-handler request)
+    (render-Home request))
+  (send/suspend/dispatch response-generator))
+
+
+
 (define (prime-handler request)
-  
-    (response/xexpr
+  (define (response-generator embed/url)
+  (define bindings (request-bindings request))
+  (cond((exists-binding? '~ bindings)
+        (define input (extract-binding/single '(number1) bindings))
+        (define number2 (extract-binding/single '(number2) bindings))
+       (response/xexpr
+        `(html (head (title "Prime number"))
+               (body
+                (h1 "Merge Sort")
+                (body
+                 (p "El numero es: ",  (listanum->lista(primes ((string->number(input) string->number(number2))))))
+                 (p (a ([href, (embed/url back-handler)]) "Back to main page"))) ) )))
+       (else
+       (response/xexpr
      `(html (head (title "Prime number"))
             (body
              (h1 "Prime number")
-             (h "Ingrese dos numeros")
-             (input (name "1"))
-             (input (name "2"))
-             (button(name "Send"))
-             ))))
-
+             (h3 "Ingresa dos numeros")
+             (form
+              (input ((name "number1")))
+              (input ((name "number2")))
+             (input((type "Submit"))))
+             (p (a ([href, (embed/url back-handler)]) "Back to main page"))
+             ))))))
+  (define (back-handler request)
+    (render-Home request))
+  (send/suspend/dispatch response-generator))
 
 
 ;;renderizamos los items que tiene el post (single items from a structure )
